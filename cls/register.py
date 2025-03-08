@@ -7,7 +7,7 @@ class Register:
         self.user = user
         self.register = self.user_register()
 
-    def user_register():
+    def user_register(self):
 
         id = int(input("Ingrese su numero de documento de identidad"))
         user.append(id)
@@ -18,9 +18,10 @@ class Register:
         email = input("Ingrese su correo electronico")
         user.append(email)
         password = input("Ingrese un contraseña minimo 8 caracteres entre numeros y letras con un caracter especial")
-        user.append(password)
+        self.encryptPassword(password)
         print("Usuario creado exitosamente")
         print(user)
 
-    def encryptPassword():
-        pass
+    def encryptPassword(password):
+        hashedPass = bcrypt.hashpw(password, 10)
+        user.append(hashedPass)
