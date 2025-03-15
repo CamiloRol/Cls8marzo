@@ -2,16 +2,15 @@ import bcrypt
 
 
 class Register:
-    def __init__(self, id, name, last_name, email, passwordEncoded):
-        self.id = id
-        self.name = name
-        self.last_name = last_name
-        self.email = email
+    def __init__(self, id_usuario, nombre, apellido, email, passwordEncoded):
+        self.id = id_usuario
+        self.name = nombre
+        self.last_name =  apellido
+        self.email =  email
         self.password = passwordEncoded
         self.user = []
 
     def user_register(self):
-
         self.user.append(self.id)
         self.user.append(self.name)
         self.user.append(self.last_name)
