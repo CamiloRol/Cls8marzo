@@ -1,26 +1,25 @@
 import bcrypt
 
-user = []
 
 class Register:
-    def __init__(self, user):
-        self.user = user
-        self.register = self.user_register()
+    def __init__(self, id_usuario, nombre, apellido, email, passwordEncoded):
+        self.id = id_usuario
+        self.name = nombre
+        self.last_name =  apellido
+        self.email =  email
+        self.password = passwordEncoded
+        self.user = []
 
-    def user_register():
-
-        id = int(input("Ingrese su numero de documento de identidad"))
-        user.append(id)
-        name = input("Ingrese su primer nombre")
-        user.append(name)
-        last_name = input("Ingrese su primer apellido")
-        user.append(last_name)
-        email = input("Ingrese su correo electronico")
-        user.append(email)
-        password = input("Ingrese un contraseña minimo 8 caracteres entre numeros y letras con un caracter especial")
-        user.append(password)
+    def user_register(self):
+        self.user.append(self.id)
+        self.user.append(self.name)
+        self.user.append(self.last_name)
+        self.user.append(self.email)
+        self.encryptPassword()
         print("Usuario creado exitosamente")
-        print(user)
+        print(self.user)
 
-    def encryptPassword():
-        pass
+    def encryptPassword(self):
+        salt = bcrypt.gensalt()
+        hashedPass = bcrypt.hashpw(self.password, salt)
+        self.user.append(hashedPass)
