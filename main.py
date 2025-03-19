@@ -1,5 +1,7 @@
 from cls.register import Register
 import streamlit as st
+from cls.login import Login
+
 
 st.set_page_config(page_title="UnrandomProy", layout="wide")
 
@@ -29,20 +31,23 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+if "user" not in st.session_state:
+    st.session_state["user"] = []
+
 # Menú lateral
 st.sidebar.markdown("<h2 class='centered-text'>Menú</h2>", unsafe_allow_html=True)
 st.sidebar.markdown("<div class='sidebar-buttons'>", unsafe_allow_html=True)
 if st.sidebar.button("Registro de Usuario"):
-    st.session_state.mostrar_formulario = "registro"
+    st.session_state["mostrar_formulario"] = "registro"
 if st.sidebar.button("Login"):
-    st.session_state.mostrar_formulario = "login"
+    st.session_state["mostrar_formulario"] = "login"
 st.sidebar.markdown("</div>", unsafe_allow_html=True)
 
 # Verifica si el formulario debe mostrarse
 if "mostrar_formulario" not in st.session_state:
-    st.session_state.mostrar_formulario = None
+    st.session_state["mostrar_formulario"] = None
 if "mostrar_alerta" not in st.session_state:
-    st.session_state.mostrar_alerta = False
+    st.session_state["mostrar_alerta"] = False
 if "form_data" not in st.session_state:
     st.session_state.form_data = {
         "id_usuario": "",
@@ -52,7 +57,7 @@ if "form_data" not in st.session_state:
         "contrasena": ""
     }
 
-if st.session_state.mostrar_formulario == "registro":
+if st.session_state["mostrar_formulario"] == "registro":
     st.markdown("<h2 class='centered-text'>Registrate</h2>", unsafe_allow_html=True)
     
     with st.container():
@@ -66,7 +71,7 @@ if st.session_state.mostrar_formulario == "registro":
         passwordEncoded = contrasena.encode('utf-8')
 
         
-        formRegister = Register(id_usuario, nombre, apellido, email, passwordEncoded)
+        formRegister = Register(id_usuario, nombre, apellido, email, passwordEncoded, st.session_state["user"])
         if st.button("Registrar"):
             formRegister.user_register()
             st.session_state.form_data = {  # Limpia el formulario después del registro
@@ -76,16 +81,22 @@ if st.session_state.mostrar_formulario == "registro":
             "email": "",
             "contrasena": ""
             }
-            st.session_state.mostrar_alerta = True
+            st.session_state["mostrar_alerta"] = True
             
 
-if st.session_state.mostrar_alerta:
+if st.session_state["mostrar_alerta"]:
     st.balloons()
     st.success("🎉 ¡Felicitaciones! Te acabas de registrar exitosamente.")
-    st.session_state.mostrar_alerta = False
+    st.session_state["mostrar_alerta"] = False
 
-elif st.session_state.mostrar_formulario == "login":
+elif st.session_state["mostrar_formulario"] == "login":
     st.markdown("<h2 class='centered-text'>Inicio de Sesion</h2>", unsafe_allow_html=True)
-    otro_campo = st.text_input("Campo Extra")
+    emailLogin = st.text_input("Email")
+    contrasenaLogin = st.text_input("Contraseña", type="password")
+
     if st.button("Enviar"):
-        st.success("Otro formulario enviado con éxito!")
+        loginAuth = Login(st.session_state["user"])
+        if loginAuth.verificar_credenciales(emailLogin, contrasenaLogin):
+            st.success("El login ha sido exitoso cargando...")
+        else:
+            st.error("Datos incorrectos")
